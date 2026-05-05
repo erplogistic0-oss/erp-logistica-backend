@@ -123,14 +123,16 @@ router.post('/generar', async (req, res) => {
 
     // Enviar correo al supervisor
     try {
-      await enviarCorreoSupervisor({ ...guia, items: productosSeleccionados.map(p => ({
-        codigo_bien: p.codigo,
-        descripcion: p.descripcion,
-        unidad_medida: p.unidad,
-        cantidad_programada: p.cantidad_programada,
-      }))});
+      await enviarCorreoSupervisor({
+        ...guia, items: productosSeleccionados.map(p => ({
+          codigo_bien: p.codigo,
+          descripcion: p.descripcion,
+          unidad_medida: p.unidad,
+          cantidad_programada: p.cantidad_programada,
+        }))
+      });
     } catch (mailError) {
-      console.error('Error enviando correo:', mailError.message);
+      console.error('Error enviando correo DETALLE:', mailError);
     }
 
     res.json({
