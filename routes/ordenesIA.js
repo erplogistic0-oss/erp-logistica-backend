@@ -131,8 +131,9 @@ router.post('/generar', async (req, res) => {
           cantidad_programada: p.cantidad_programada,
         }))
       });
+      console.log('Correo enviado exitosamente');
     } catch (mailError) {
-      console.error('Error enviando correo DETALLE:', mailError);
+      console.error('Error enviando correo DETALLE:', JSON.stringify(mailError, Object.getOwnPropertyNames(mailError)));
     }
 
     res.json({
