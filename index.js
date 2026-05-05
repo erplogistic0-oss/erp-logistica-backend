@@ -10,7 +10,7 @@ app.use(express.json());
 app.use('/api/operadores',          require('./routes/operadores'));
 app.use('/api/vehiculos',           require('./routes/vehiculos'));
 app.use('/api/productos',           require('./routes/productos'));
-app.use('/api/despachos',           require('./routes/despachos'));
+app.use('/api/despachos', require('./routes/despachos'));
 app.use('/api/despacho-productos',  require('./routes/despachoProductos'));
 app.use('/api/alertas',             require('./routes/alertas'));
 app.use('/api/guias-remision',      require('./routes/guiasRemision'));
