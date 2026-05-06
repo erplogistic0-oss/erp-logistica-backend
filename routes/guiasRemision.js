@@ -108,5 +108,18 @@ router.put('/:id/recepcion', async (req, res) => {
 
   res.json(data);
 });
+// Cambiar estado con PATCH (usado por app Flutter del chofer)
+router.patch('/:id/estado', async (req, res) => {
+  const { estado } = req.body;
+  const { data, error } = await supabase
+    .from('guias_remision')
+    .update({ estado })
+    .eq('id', req.params.id)
+    .select()
+    .single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
 
 module.exports = router;
