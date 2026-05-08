@@ -120,6 +120,17 @@ router.patch('/:id/estado', async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
-
+// Asignar chofer y vehículo
+router.put('/:id/asignar', async (req, res) => {
+  const { operador_id, vehiculo_id } = req.body;
+  const { data, error } = await supabase
+    .from('guias_remision')
+    .update({ operador_id, vehiculo_id })
+    .eq('id', req.params.id)
+    .select()
+    .single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
 
 module.exports = router;
