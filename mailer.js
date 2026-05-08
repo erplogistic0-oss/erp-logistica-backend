@@ -1,16 +1,6 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function enviarCorreoSupervisor(guia) {
   const productosHTML = guia.items.map((item, i) => `
@@ -23,8 +13,8 @@ async function enviarCorreoSupervisor(guia) {
     </tr>
   `).join('');
 
-  await transporter.sendMail({
-    from: `"LogiControl IMPEMAR" <${process.env.MAIL_USER}>`,
+  await resend.emails.send({
+    from: 'LogiControl <noreply@logicontrol-erp.lat>',
     to: process.env.MAIL_USER,
     subject: `📦 Nueva Orden de Carga — ${guia.numero_guia}`,
     html: `
@@ -64,8 +54,8 @@ async function enviarCorreoSupervisor(guia) {
 }
 
 async function enviarCorreoAuxiliar(guia) {
-  await transporter.sendMail({
-    from: `"LogiControl IMPEMAR" <${process.env.MAIL_USER}>`,
+  await resend.emails.send({
+    from: 'LogiControl <noreply@logicontrol-erp.lat>',
     to: process.env.MAIL_AUXILIAR,
     subject: `✅ Proceso Completado — Guía ${guia.numero_guia}`,
     html: `
