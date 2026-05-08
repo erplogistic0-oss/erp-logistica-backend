@@ -14,8 +14,7 @@ app.use('/api/despachos', require('./routes/despachos'));
 app.use('/api/despacho-productos', require('./routes/despachoProductos'));
 app.use('/api/alertas', require('./routes/alertas'));
 app.use('/api/guias-remision', require('./routes/guiasRemision'));
-app.use('/api/ordenes-ia', require('./routes/ordenesIA'));
-app.use('/api/roles', require('./routes/roles'));
+app.use('/api/ordenes-auto', require('./routes/ordenesIA')); app.use('/api/roles', require('./routes/roles'));
 app.get('/', (req, res) => {
   res.json({ mensaje: 'ERP Logística API funcionando ✓' });
 });
