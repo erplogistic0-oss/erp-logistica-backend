@@ -69,7 +69,8 @@ router.post('/generar', async (req, res) => {
     const { data: operadores } = await supabase
       .from('operadores')
       .select('id')
-      .eq('activo', true);
+      .eq('activo', true)
+      .eq('rol', 'chofer');
 
     const { data: vehiculos } = await supabase
       .from('vehiculos')
