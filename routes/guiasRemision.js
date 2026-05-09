@@ -133,4 +133,24 @@ router.put('/:id/asignar', async (req, res) => {
   res.json(data);
 });
 
+// Reportar problema con la carga
+router.post('/:id/problema', async (req, res) => {
+  const { descripcion } = req.body;
+  const { data: guia } = await supabase
+    .from('guias_remision')
+    .select('numero_guia')
+    .eq('id', req.params.id)
+    .single();
+
+  const { error } = await supabase.from('alertas').insert({
+    tipo: 'problema_carga',
+    mensaje: `Problema en carga guía ${guia?.numero_guia}: ${descripcion}`,
+    guia_id: req.params.id,
+    resuelta: false,
+  });
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ mensaje: 'Problema reportado al supervisor' });
+});
+
 module.exports = router;
