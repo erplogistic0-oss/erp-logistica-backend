@@ -111,6 +111,23 @@ router.put('/:id/recepcion', async (req, res) => {
 // Cambiar estado con PATCH (usado por app Flutter del chofer)
 router.patch('/:id/estado', async (req, res) => {
   const { estado } = req.body;
+
+  // Si intenta pasar a en_ruta, verificar que no haya alertas sin resolver
+  if (estado === 'en_ruta') {
+    const { data: alertas } = await supabase
+      .from('alertas')
+      .select('id')
+      .eq('guia_id', req.params.id)
+      .eq('tipo', 'problema_carga')
+      .eq('resuelta', false);
+
+    if (alertas && alertas.length > 0) {
+      return res.status(400).json({
+        error: 'El supervisor debe resolver el problema antes de dar salida'
+      });
+    }
+  }
+
   const { data, error } = await supabase
     .from('guias_remision')
     .update({ estado })
