@@ -138,7 +138,7 @@ router.post('/:id/problema', async (req, res) => {
   const { descripcion } = req.body;
   const { data: guia } = await supabase
     .from('guias_remision')
-    .select('numero_guia')
+    .select('numero_guia, cliente_nombre, punto_llegada')
     .eq('id', req.params.id)
     .single();
 
@@ -150,6 +150,40 @@ router.post('/:id/problema', async (req, res) => {
   });
 
   if (error) return res.status(500).json({ error: error.message });
+
+  // Enviar correo al supervisor
+  try {
+    const { Resend } = require('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: 'LogiControl <noreply@logicontrol-erp.lat>',
+      to: process.env.MAIL_USER,
+      subject: `⚠️ Problema en carga — Guía ${guia?.numero_guia}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
+          <div style="background:#DC2626;padding:20px;text-align:center">
+            <h1 style="color:white;margin:0;font-size:20px">⚠️ Alerta de Problema en Carga</h1>
+            <p style="color:#fca5a5;margin:4px 0 0">IMPEMAR GROUP — LogiControl</p>
+          </div>
+          <div style="padding:24px;background:#f9fafb">
+            <h2 style="color:#111;margin-top:0">Guía N° ${guia?.numero_guia}</h2>
+            <table style="width:100%;border-collapse:collapse;background:white">
+              <tr><td style="padding:10px;color:#666;border-bottom:1px solid #f3f4f6">Cliente</td><td style="padding:10px;font-weight:bold;border-bottom:1px solid #f3f4f6">${guia?.cliente_nombre}</td></tr>
+              <tr><td style="padding:10px;color:#666;border-bottom:1px solid #f3f4f6">Destino</td><td style="padding:10px;border-bottom:1px solid #f3f4f6">${guia?.punto_llegada}</td></tr>
+              <tr><td style="padding:10px;color:#666">Problema reportado</td><td style="padding:10px;color:#DC2626;font-weight:bold">${descripcion}</td></tr>
+            </table>
+            <p style="color:#666;margin-top:16px;font-size:13px">El chofer ha reportado un problema con la carga. Por favor revise y tome acción.</p>
+          </div>
+          <div style="background:#DC2626;padding:12px;text-align:center">
+            <p style="color:white;margin:0;font-size:12px">LogiControl v1.0 — SENATI 2026</p>
+          </div>
+        </div>
+      `,
+    });
+  } catch (mailError) {
+    console.error('Error enviando correo problema:', mailError.message);
+  }
+
   res.json({ mensaje: 'Problema reportado al supervisor' });
 });
 
