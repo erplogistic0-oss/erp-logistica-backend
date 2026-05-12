@@ -240,9 +240,15 @@ router.post('/:id/confirmar-cliente', async (req, res) => {
     .select()
     .single();
 
+  // Obtener items para el correo
+  const { data: items } = await supabase
+    .from('guia_items')
+    .select('*')
+    .eq('guia_id', req.params.id);
+
   // Enviar correo al auxiliar
   try {
-    await enviarCorreoAuxiliar(guiaActualizada);
+    await enviarCorreoAuxiliar({ ...guiaActualizada, items: items || [] });
   } catch (mailError) {
     console.error('Error enviando correo auxiliar:', mailError.message);
   }
