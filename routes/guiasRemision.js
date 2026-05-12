@@ -204,4 +204,50 @@ router.post('/:id/problema', async (req, res) => {
   res.json({ mensaje: 'Problema reportado al supervisor' });
 });
 
+// Ruta pública para confirmación del cliente
+router.get('/:id/confirmacion', async (req, res) => {
+  const { data, error } = await supabase
+    .from('guias_remision')
+    .select('*, guia_items(*)')
+    .eq('id', req.params.id)
+    .single();
+  if (error) return res.status(500).json({ error: error.message });
+  if (data.estado !== 'llego') {
+    return res.status(400).json({ error: 'Esta guía no está disponible para confirmación' });
+  }
+  res.json(data);
+});
+
+// Confirmar recepción por el cliente
+router.post('/:id/confirmar-cliente', async (req, res) => {
+  const { ruc } = req.body;
+
+  const { data: guia, error } = await supabase
+    .from('guias_remision')
+    .select('*, guia_items(*)')
+    .eq('id', req.params.id)
+    .single();
+
+  if (error || !guia) return res.status(500).json({ error: 'Guía no encontrada' });
+  if (guia.cliente_ruc !== ruc) return res.status(401).json({ error: 'RUC incorrecto' });
+  if (guia.estado !== 'llego') return res.status(400).json({ error: 'Esta guía no está disponible para confirmación' });
+
+  // Cambiar estado a recepcionado
+  const { data: guiaActualizada } = await supabase
+    .from('guias_remision')
+    .update({ estado: 'recepcionado' })
+    .eq('id', req.params.id)
+    .select()
+    .single();
+
+  // Enviar correo al auxiliar
+  try {
+    await enviarCorreoAuxiliar(guiaActualizada);
+  } catch (mailError) {
+    console.error('Error enviando correo auxiliar:', mailError.message);
+  }
+
+  res.json({ mensaje: 'Recepción confirmada exitosamente' });
+});
+
 module.exports = router;
