@@ -5,11 +5,11 @@ const { enviarCorreoSupervisor } = require('../mailer');
 
 // Clientes del canal moderno que simulamos
 const CLIENTES = [
-  { nombre: 'TIENDAS TAMBO S.A.C.', ruc: '20563529378', destino: 'AV. JAVIER PRADO ESTE 6210 LA MOLINA LIMA' },
-  { nombre: 'PLAZA VEA S.A.C.', ruc: '20508565934', destino: 'AV. ANGAMOS ESTE 2805 SURQUILLO LIMA' },
-  { nombre: 'TOTTUS S.A.', ruc: '20511599567', destino: 'AV. UNIVERSITARIA 6284 LOS OLIVOS LIMA' },
-  { nombre: 'MASS S.A.C.', ruc: '20601233488', destino: 'AV. COLONIAL 879 LIMA CERCADO' },
-  { nombre: 'METRO S.A.', ruc: '20109072177', destino: 'AV. BENAVIDES 3866 MIRAFLORES LIMA' },
+  { nombre: 'TIENDAS TAMBO S.A.C.', ruc: '20563529378', destino: 'AV. GRAU 125 HUACHO HUAURA LIMA' },
+  { nombre: 'PLAZA VEA S.A.C.', ruc: '20508565934', destino: 'AV. TUPAC AMARU 340 HUACHO HUAURA LIMA' },
+  { nombre: 'TOTTUS S.A.', ruc: '20511599567', destino: 'AV. 28 DE JULIO 890 HUACHO HUAURA LIMA' },
+  { nombre: 'MASS S.A.C.', ruc: '20601233488', destino: 'JR. COMERCIO 456 HUACHO HUAURA LIMA' },
+  { nombre: 'METRO S.A.', ruc: '20109072177', destino: 'AV. CENTENO 234 HUACHO HUAURA LIMA' },
 ];
 
 // Productos reales de Arca Continental
